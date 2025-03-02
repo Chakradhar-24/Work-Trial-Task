@@ -1,0 +1,108 @@
+crypto price tracker documentation
+
+introduction
+this is a web application that shows live cryptocurrency prices. it is built using next.js and uses the coingecko api to fetch real-time data. react query is used for handling data fetching and caching. 
+
+project setup guide
+
+prerequisites
+you need to have the following installed on your computer:
+- node.js (version 18 or later)
+- npm or yarn
+
+installation
+1. first, download the project from github by running:
+   git clone https://github.com/your-username/crypto-price-tracker.git
+   cd crypto-price-tracker
+2. install the required packages:
+   npm install
+
+running the application
+
+to start the application, run:
+npm run dev
+
+open your browser and go to http://localhost:3000 to see the app.
+
+api integration details
+the application gets real-time prices from the coingecko api.
+api endpoint:
+https://api.coingecko.com/api/v3/simple/price
+
+data is fetched for bitcoin, ethereum, ripple, cardano, and solana, and the prices are displayed in usd.
+
+data fetching code
+
+this code is used to get the crypto prices:
+import axios from "axios";
+
+const API_URL = "https://api.coingecko.com/api/v3/simple/price";
+
+export async function fetchCryptoPrices() {
+  const response = await axios.get(API_URL, {
+    params: {
+      ids: "bitcoin,ethereum,ripple,cardano,solana",
+      vs_currencies: "usd",
+    },
+  });
+  return response.data;
+}
+
+state management
+
+react query is used to handle fetching and caching data. it helps in making sure the app does not request data too often and keeps the latest data available.
+
+data fetching in the app:
+import { useQuery } from "@tanstack/react-query";
+import { fetchCryptoPrices } from "../lib/api";
+
+const { data, isLoading, refetch } = useQuery(["cryptoPrices"], fetchCryptoPrices, {
+  staleTime: 60000,
+});
+
+challenges and solutions
+
+1. api rate limiting
+   problem: if the app requests data too often, the api might block it.
+   solution: caching was added with staleTime: 60000 to reduce how often new data is fetched.
+
+2. performance optimization
+   problem: the app was updating too often, making it slow.
+   solution: react query is used to update only when necessary, reducing unnecessary updates.
+
+3. handling errors
+   problem: sometimes, the api might fail or there could be no internet.
+   solution: error handling was added so that users see a message instead of a broken app.
+
+evaluation criteria
+
+1. api integration
+data should be fetched properly and errors should be handled.
+
+2. user experience and mobile support
+the app should look good on all screen sizes.
+
+3. code quality
+the code should be easy to read and well-organized.
+
+4. documentation
+the documentation should be clear and easy to follow.
+
+running the documentation
+the documentation is built using docusaurus.
+
+1. go to the docs folder:
+   cd docs
+2. install dependencies:
+   npm install
+3. start the documentation server:
+   npm start
+4. open http://localhost:3000 to see the documentation.
+
+additional notes
+- tailwind css is used for styling.
+- next.js settings are in the next.config.ts file.
+- postcss is configured in postcss.config.mjs.
+- typescript settings are in tsconfig.json.
+
+this documentation provides a simple explanation of how the crypto price tracker works and how to run it.
